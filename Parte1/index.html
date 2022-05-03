@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<title> P3 IRAC </title>
+	</head>
+<body>
+    <h1 style="text-align: center"> Práctica 3 IRAC </h1>
+    <h3 style="text-align: center"> Grupo 05 </h3>
+    <div style="text-align: center">
+        <video class="dashjs-player" autoplay controls preload="auto" width="80%" >
+            <!-- URL dada para el MPD -->
+            <source src="https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd" type="application/dash+xml"/>
+        </video>
+    </div>
+    <script>
+        var player;
+        document.addEventListener("DOMContentLoaded", function () {
+            init();
+        });
+        function init(){
+            player = dashjs.MediaPlayerFactory.create( document.querySelector(".dashjsplayer"));
+        };
+    </script>
+    <!-- Para cargar la herramienta dash.js -->
+    <script src="http://cdn.dashjs.org/v4.3.0/dash.all.min.js"></script>
+</body>
+</html>

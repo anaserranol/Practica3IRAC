@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<title> P3 IRAC </title>
+	</head>
+    <body>
+        <h1 style="text-align: center"> Práctica 3 IRAC </h1>
+        <h3 style="text-align: center"> Grupo 05 </h3>
+        <div class="code" style="text-align: center">
+            <video class="dashjs-player" autoplay controls preload="auto" muted width="80%">
+            </video>
+            </div>
+            <div class="code">
+            <p>Video Bitrate: <span id="bitrate"></span></p>
+            <p>Video Buffer: <span id="buffer"></span></p>
+            <p>Video Representation: <span id="representation"></span></p>
+        </div>
+        <script>
+
+            document.addEventListener("DOMContentLoaded", function () {
+                init();
+            });
+            function init(){
+                // Parte 3
+                const protData = {
+                    "org.w3.clearkey": {
+                        "clearkeys": {
+                            "oW5AK5BW43HzbTSKpiu3SQ":  "hyN9IKGfWKdAwFaE5pm0qg"
+                        }
+                    }
+                };
+                var video,
+                player,
+                mpd_url = "./output/stream.mpd";
+                video = document.querySelector("video");
+                player = dashjs.MediaPlayer().create();
+                player.initialize(video, mpd_url, true);
+                // Parte 3
+                player.setProtectionData(protData);
+                player.on(dashjs.MediaPlayer.events["PLAYBACK_ENDED"], function() {
+                    clearInterval(eventPoller);
+                });
+                var eventPoller = setInterval(function() {
+                    var streamInfo = player.getActiveStream().getStreamInfo();
+                    var dashMetrics = player.getDashMetrics();
+                    var dashAdapter = player.getDashAdapter();
+                    if (dashMetrics && streamInfo) {
+                        const periodIdx = streamInfo.index;
+                        var repSwitch = dashMetrics.getCurrentRepresentationSwitch('video', true);
+                        var bufferLevel = dashMetrics.getCurrentBufferLevel('video', true);
+                        var bitrate = repSwitch ? Math.round(dashAdapter.
+                        getBandwidthForRepresentation(repSwitch.to,
+                        periodIdx) / 1000) : NaN;
+                        document.getElementById('buffer').innerText = bufferLevel + " secs";
+                        document.getElementById('bitrate').innerText = bitrate + " Kbps";
+                        document.getElementById('representation').innerText = repSwitch.to;
+                    }
+                }, 500);
+            }
+        </script>
+        <script src="http://cdn.dashjs.org/v4.3.0/dash.all.min.js"></script>
+    </body>
+</html>
